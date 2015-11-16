@@ -18,3 +18,8 @@
 | resources (either within RStudio or your default web browser, depending on
 | your setup).  Alternatively, a simple web search often yields the answer
 | you're looking for.
+
+git init
+git add . 
+git commit -m 'first commit'
+git push
