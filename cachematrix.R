@@ -19,11 +19,12 @@ makeCacheMatrix <- function(x = matrix()) {
     #
     # Args:
     #   x: Matrix; A square matrix that is invertible.
+    #              Can be a 1x1 matrix with NA as single element.
     # Returns:
-    #   $set(mx1)        -> the matrix
-    #   $get()           -> the matrix
-    #   $setInverse(imx) -> the inverse of the matrix, or NULL
-    #   $getInverse()    -> the inverse of the matrix, or NULL
+    #   $set(x)        -> the matrix
+    #   $get()         -> the matrix
+    #   $setInverse(x) -> the inverse of the matrix, or NULL
+    #   $getInverse()  -> the inverse of the matrix, or NULL
     
     mx     <- x
     mx.inv <- NULL
