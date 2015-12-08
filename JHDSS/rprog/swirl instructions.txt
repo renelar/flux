@@ -23,3 +23,11 @@ git init
 git add . 
 git commit -m 'first commit'
 git push
+
+http://plants.usda.gov/adv_search.html
+http://archive.ics.uci.edu/ml/datasets/Flags
+viewinfo()
+
+http://varianceexplained.org/r/teach_ggplot2_to_beginners/
+http://www.ling.upenn.edu/~joseff/rstudy/week4.html
+
