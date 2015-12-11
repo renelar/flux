@@ -17,9 +17,11 @@
 #        R: 3.2.2, 64-bit
 #   Editor: RStudio 0.99.486
 # Packages: data.table 1.9.6, lubridate 1.5.0, xlsx 0.5.7
-#           RCurl 1.95-4.7, XML 3.98-1.3
+#           RCurl 1.95-4.7, XML 3.98-1.3, Java 8 update 66
 # -----------------------------------------------------------------------------
 # ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+DATA.DIR <- "C:\\Users\\Kinective\\RProjects\\JHDSS\\03-clean"
 
 # Question 1
 # ----------
@@ -31,7 +33,7 @@ require(lubridate)
 require(data.table)
 
 current.wd <- getwd()
-setwd("C:\\Users\\Kinective\\RProjects\\JHDSS\\03-clean")
+setwd(DATA.DIR)
 
 file.url <- paste0("https://d396qusza40orc.cloudfront.net/",
                    "getdata%2Fdata%2Fss06hid.csv")
@@ -43,6 +45,7 @@ download.file(file.url, destfile = csv.file)
 
 ACSdata <- read.csv(csv.file)
 setwd(current.wd)
+rm(csv.file, instant, file.url)
 
 ACSsurvey <- as.data.table(ACSdata)   # Convert to data.table
 ACSsurvey[,.N, by = VAL][order(VAL)]  #
@@ -52,21 +55,22 @@ ACSsurvey[,.N, by = VAL][order(VAL)]  #
 require(xlsx)
 
 current.wd <- getwd()
-setwd("C:\\Users\\Kinective\\DSS-repo\\JHDSS\\clean")
+setwd(DATA.DIR)
 
 # Natural Gas Aquisition Program
 file.url <- paste0("https://d396qusza40orc.cloudfront.net/",
                    "getdata%2Fdata%2FDATA.gov_NGAP.xlsx") 
-time.stamp <- with_tz(now(), tzone = "GMT")
-data.downloaded <- format(time.stamp, "%Y%m%b%d-%H%M%Z")
-csv.file <- paste0("./data/getdata_Fdata_FDATA.gov_NGAP-", 
-                   data.downloaded, ".xlsx")
-# !! See http://bit.ly/1NStnA8
-download.file(file.url, csv.file, mode = "wb")
 
+instant    <- with_tz(now(), tzone = "GMT")
+time.stamp <- format(time.stamp, "%Y%m%b%d-%H%M%Z")
+xlsx.file  <- paste0("./data/getdata_Fdata_FDATA.gov_NGAP-", 
+                     time.stamp, ".xlsx")
+# !! See http://bit.ly/1NStnA8
+download.file(file.url, xlsx.file, mode = "wb")
 dat <- read.xlsx(csv.file, sheetIndex = 1, 
                  rowIndex = c(18:23), colIndex = c(7:15))
 setwd(current.wd)
+rm(instant, file.url)
 
 # What is the value of: sum(dat$Zip*dat$Ext,na.rm=T)
 sum(dat$Zip*dat$Ext,na.rm=T)
@@ -77,7 +81,8 @@ require(RCurl)
 require(XML)
 
 current.wd <- getwd()
-setwd("C:\\Users\\Kinective\\DSS-repo\\JHDSS\\clean")
+setwd(DATA.DIR)
+
 file.url <- paste0("https://d396qusza40orc.cloudfront.net/",
                    "getdata%2Fdata%2Frestaurants.xml") 
 
@@ -133,3 +138,8 @@ system.time(for (i in 1:100) {
 })
 
 # --< end of file >------------------------------------------------------------
+a<-1:3
+a<- function(a=2,b=3){
+    a*b
+}
+a
