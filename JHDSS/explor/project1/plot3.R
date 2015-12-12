@@ -26,11 +26,10 @@
 # ***********************************************************************
 DATA.DIR  <- "C:\\Users\\Kinective\\RProjects\\JHDSS\\04-explor\\data"
 
-
-DATA.FILE <- "household_power_consumption.txt"
-
 current.wd <- getwd()
 setwd(DATA.DIR)
+
+DATA.FILE <- "household_power_consumption.txt"
 
 if (!file.exists(DATA.FILE)) {
     
@@ -85,6 +84,8 @@ GAP <-
     mutate(Sub_metering_1 = as.numeric(Sub_metering_1)) %>%
     mutate(Sub_metering_2 = as.numeric(Sub_metering_2)) %>%
     mutate(Sub_metering_3 = as.numeric(Sub_metering_3))
+
+rm(col.headers, raw.df)
 
 # Create a line plot of Sub_metering values & save to .png file
 require(graphics)

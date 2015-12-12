@@ -27,12 +27,10 @@
 DATA.DIR  <- "C:\\Users\\Kinective\\RProjects\\JHDSS\\04-explor\\data"
 
 
-DATA.FILE <- "household_power_consumption.txt"
-
 current.wd <- getwd()
 setwd(DATA.DIR)
 
-require(data.table)
+DATA.FILE <- "household_power_consumption.txt"
 
 if (!file.exists(DATA.FILE)) {
 
@@ -55,39 +53,34 @@ if (!file.exists(DATA.FILE)) {
     rm(instant, file.url, zip.file)
 }
 
-require(dplyr)
-require(data.table)
-
-COL_NAMES <- c("Date", "Time", "Global_active_power", "Global_reactive_power",
-               "Voltage", "Global_intensity", "Sub_metering_1",
-               "Sub_metering_2", "Sub_metering_3")
+col.headers <- as.vector(read.table(DATA.FILE, header = FALSE, sep=";", 
+                                    colClasses = "character", nrows = 1,
+                                    fill=TRUE, strip.white=TRUE))
 
 # This produces a raw data frame, with all columns as character vectors
 # Result = 2075259 obs. of  9 variables
+require(dplyr)
 raw.df <- tbl_df(read.table(DATA.FILE, header = TRUE, sep=";", 
-                            col.names = COL_NAMES, na.strings = "?",
+                            col.names = col.headers, na.strings = "?",
                             colClasses = "character",
                             fill=TRUE, strip.white=TRUE))
 
-# NOTE: To clean up Time data, use...
-# require(chron)
-# mutate(Time = chron(time = Time))
+    # NOTE: To clean up Time data, use...
+    # require(chron)
+    # mutate(Time = chron(time = Time))
 
-# Clean up the data and create a data table, GAP (Global Active Power), with
-# only the Date and Global_active_power columns; removed 25,979 NAs from
-# Global_active_power column
-# Result = 2049280 obs. of  2 variables
+# Selecting only observations from February 1st and 2nd, 2007
+# (Result = 2880 obs.). Clean up the data and create a data frame, 
+# GAP (Global Active Power), that has only Date and Global_active_power
+# columns.
 GAP <-
     raw.df %>%
-        mutate(Date = as.Date(Date, "%d/%m/%Y")) %>%
-        mutate(Global_active_power = as.numeric(Global_active_power)) %>%
-        subset.data.frame(!is.na(Global_active_power), 
-                          select = c(Date, Global_active_power)) %>%
-        data.table()
+    subset.data.frame(Date == "1/2/2007" | Date == "2/2/2007",
+                      select = c(Date, Time, Global_active_power)) %>%
+    mutate(Date = as.Date(Date, "%d/%m/%Y")) %>%
+    mutate(Global_active_power = as.numeric(Global_active_power))
 
-# Select only February 1st and 2nd, 2007
-# Result = 2880 obs. of  2 variables
-GAP <- GAP[GAP[,(Date >= "2007-02-01" & Date <= "2007-02-02")]]
+rm(col.headers, raw.df)
 
 # Create a a histogram of Global_active_power values & save to .png file
 png(filename = "plot1.png")

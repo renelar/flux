@@ -52,6 +52,7 @@ if (!file.exists(DATA.FILE)) {
     rm(instant, file.url, zip.file)
 }
 
+# Get column header names from the file itself
 col.headers <- as.vector(read.table(DATA.FILE, header = FALSE, sep=";", 
                                     colClasses = "character", nrows = 1,
                                     fill=TRUE, strip.white=TRUE))
@@ -70,8 +71,7 @@ raw.df <- tbl_df(read.table(DATA.FILE, header = TRUE, sep=";",
 
 # Selecting only observations from February 1st and 2nd, 2007
 # (Result = 2880 obs.). Clean up the data and create a data frame that has only
-# Date, Time, and Sub_metering columns
-# (Sub_metering_1, Sub_metering_2, Sub_metering_3).
+# the needed data columns.
 require(lubridate)
 GAP <-
     raw.df %>%
@@ -89,10 +89,13 @@ GAP <-
     mutate(Sub_metering_2 = as.numeric(Sub_metering_2)) %>%
     mutate(Sub_metering_3 = as.numeric(Sub_metering_3))
 
-# dev.off()
+rm(col.headers, raw.df)
+
+# Draw all plots
 require(graphics)
 png(filename = "plot4.png")
 par(mfrow = c(2,2))
+
 plot(GAP$Date, GAP$Global_active_power, type = "l", 
      ylab = "Global Active Power (kilowats)", xlab = "")
 
@@ -111,9 +114,10 @@ plot(GAP$Date, GAP$Sub_metering_3, type = "l", col = line.col[3],
      ylim = yrange, ylab = "Energy sub metering", xlab = "")
 legend("topright", legend = colnames(GAP)[6:8], 
        col = line.col, lwd = 2, cex=0.9)
-
+par(new = FALSE)
 plot(GAP$Date, GAP$Global_reactive_power, type = "l", 
      ylab = "Global_reactive_power", xlab = "datetime")
+par(mfrow = c(1,1))
 dev.off()
 
 # Reset the working directory

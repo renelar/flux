@@ -27,10 +27,10 @@
 DATA.DIR  <- "C:\\Users\\Kinective\\RProjects\\JHDSS\\04-explor\\data"
 
 
-DATA.FILE <- "household_power_consumption.txt"
-
 current.wd <- getwd()
 setwd(DATA.DIR)
+
+DATA.FILE <- "household_power_consumption.txt"
 
 if (!file.exists(DATA.FILE)) {
     
@@ -52,13 +52,13 @@ if (!file.exists(DATA.FILE)) {
     rm(instant, file.url, zip.file)
 }
 
-require(dplyr)
 col.headers <- as.vector(read.table(DATA.FILE, header = FALSE, sep=";", 
                                     colClasses = "character", nrows = 1,
                                     fill=TRUE, strip.white=TRUE))
 
 # This produces a raw data frame, with all columns as character vectors
 # Result = 2075259 obs. of  9 variables
+require(dplyr)
 raw.df <- tbl_df(read.table(DATA.FILE, header = TRUE, sep=";", 
                             col.names = col.headers, na.strings = "?",
                             colClasses = "character",
@@ -80,9 +80,12 @@ GAP <-
     mutate(Date = ymd_hms(paste0(Date, "-", Time))) %>%
     mutate(Global_active_power = as.numeric(Global_active_power))
 
+rm(col.headers, raw.df)
+
 # Create a line plot of Global_active_power values & save to .png file
+require(graphics)
 png(filename = "plot2.png")
-plot(x$Date, x$Global_active_power, type = "l", 
+plot(GAP$Date, GAP$Global_active_power, type = "l", 
      ylab = "Global Active Power (kilowats)", xlab = "")
 dev.off()
 
